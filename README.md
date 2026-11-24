@@ -7,6 +7,7 @@ PassGuard is a lightweight, dependency-free Python command-line utility for gene
 - **Customizable Constraints**: Configurable length, inclusion/exclusion of uppercase, lowercase, numbers, and symbols.
 - **Ambiguous Character Filtering**: Eliminates easily confused characters (e.g., `l`, `1`, `I`, `0`, `O`).
 - **Shannon Entropy Analysis**: Measures true cryptographic entropy in bits ($E = L \times \log_2(R)$) to assess resistance to brute-force attacks.
+- **NIST SP 800-63B Compliance Engine**: Validates passwords against federal identity guidelines and known compromised dictionary blocklists.
 
 ## Installation
 PassGuard uses Python's standard library with zero third-party dependencies.
@@ -24,7 +25,7 @@ cd Q1
 python3 main.py generate --length 16 --symbols
 ```
 
-### 2. Analyze password strength with Shannon Entropy
+### 2. Comprehensive Security Analysis (Entropy & NIST Audit)
 ```bash
 python3 main.py analyze "MySecureP@ssw0rd123"
 ```
