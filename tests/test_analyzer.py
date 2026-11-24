@@ -1,7 +1,7 @@
-"""Unit tests for baseline password analyzer."""
+"""Unit tests for NIST compliance password analyzer."""
 
 import unittest
-from passguard.analyzer import evaluate_strength
+from passguard.analyzer import evaluate_strength, check_nist_compliance
 
 
 class TestAnalyzer(unittest.TestCase):
@@ -10,15 +10,20 @@ class TestAnalyzer(unittest.TestCase):
         self.assertEqual(res["rating"], "Empty")
         self.assertEqual(res["score"], 0)
 
-    def test_short_password(self):
-        res = evaluate_strength("abc")
-        self.assertEqual(res["rating"], "Weak")
-        self.assertEqual(res["score"], 15)
+    def test_nist_short_password(self):
+        is_compliant, issues = check_nist_compliance("short")
+        self.assertFalse(is_compliant)
+        self.assertTrue(any(">= 8" in msg for msg in issues))
 
-    def test_medium_password(self):
-        res = evaluate_strength("abcdefghijk")
-        self.assertEqual(res["rating"], "Basic")
-        self.assertEqual(res["score"], 50)
+    def test_nist_common_blocklist(self):
+        is_compliant, issues = check_nist_compliance("password123")
+        self.assertFalse(is_compliant)
+        self.assertTrue(any("prohibited" in msg for msg in issues))
+
+    def test_nist_valid_password(self):
+        res = evaluate_strength("Correct-Horse-Battery-Staple")
+        self.assertEqual(res["rating"], "NIST Compliant")
+        self.assertEqual(res["score"], 100)
 
 
 if __name__ == "__main__":

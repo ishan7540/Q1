@@ -6,7 +6,7 @@ PassGuard is a lightweight, dependency-free Python command-line utility for gene
 - **Cryptographic Generation**: Uses Python's standard `secrets` module for CSPRNG security.
 - **Customizable Constraints**: Configurable length, inclusion/exclusion of uppercase, lowercase, numbers, and symbols.
 - **Ambiguous Character Filtering**: Eliminates easily confused characters (e.g., `l`, `1`, `I`, `0`, `O`).
-- **Password Strength Evaluation**: Evaluates baseline password complexity and provides detailed metrics.
+- **NIST SP 800-63B Compliance Engine**: Validates passwords against federal identity guidelines and known compromised dictionary blocklists.
 
 ## Installation
 PassGuard uses Python's standard library with zero third-party dependencies.
@@ -24,7 +24,7 @@ cd Q1
 python3 main.py generate --length 16 --symbols
 ```
 
-### 2. Analyze password strength
+### 2. Analyze password strength against NIST Guidelines
 ```bash
 python3 main.py analyze "MySecureP@ssw0rd123"
 ```
