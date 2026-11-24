@@ -64,7 +64,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \rhead{\textit{DevOps Lab: Question 1}}
-\lhead{\textit{Git Merge Conflict \& Version Control}}
+\lhead{\textit{Git Merge, Conflict, Rebase \& Restore}}
 \rfoot{Page \thepage}
 
 \begin{document}
@@ -72,7 +72,7 @@
 % Title Banner
 \begin{center}
     {\LARGE \textbf{DevOps Engineering Lab Assignment: Practical Question 1}}\\[0.4cm]
-    {\Large \textbf{Comprehensive Laboratory Report on Git Version Control, Remote Collaboration, and Intentional Merge Conflict Resolution}}\\[0.5cm]
+    {\Large \textbf{Comprehensive Laboratory Report on Git Version Control, Remote Collaboration, Intentional Merge Conflicts, Git Restore, and Git Rebase}}\\[0.5cm]
     \rule{\textwidth}{0.8pt}\\[0.4cm]
     \textbf{Author:} Ishan Satya Prakash \quad | \quad \textbf{Course:} DevOps Engineering Laboratory\\[0.2cm]
     \textbf{GitHub Repository Link:} \url{https://github.com/ishan7540/Q1}\\[0.2cm]
@@ -96,7 +96,8 @@ PassGuard is architected into clean, decoupled modules:
 \begin{enumerate}
     \item \textbf{CSPRNG Password Generator (\texttt{passguard/generator.py}):} Leverages Python's standard \texttt{secrets} module to generate passwords immune to predictable seed vulnerabilities, supporting customizable character pools and ambiguous character filtering (eliminating characters such as \texttt{0, O, l, 1, I}).
     \item \textbf{Security Analyzer Engine (\texttt{passguard/analyzer.py}):} A modular analysis engine designed to evaluate password strength. This module was selected as the focal point for the intentional merge conflict.
-    \item \textbf{Command-Line Interface (\texttt{passguard/cli.py} \& \texttt{main.py}):} A clean \texttt{argparse}-driven interface offering subcommands \texttt{generate} and \texttt{analyze}.
+    \item \textbf{Structured Exporter (\texttt{passguard/exporter.py}):} A module providing JSON formatting and serialization for security audits (developed to demonstrate \texttt{git restore} and \texttt{git rebase}).
+    \item \textbf{Command-Line Interface (\texttt{passguard/cli.py} \& \texttt{main.py}):} A clean \texttt{argparse}-driven interface offering subcommands \texttt{generate} and \texttt{analyze} with \texttt{--json} support.
     \item \textbf{Automated Test Suite (\texttt{tests/}):} A suite of unit tests utilizing the built-in \texttt{unittest} library.
 \end{enumerate}
 
@@ -104,14 +105,15 @@ PassGuard is architected into clean, decoupled modules:
 \begin{itemize}
     \item \textbf{Remote Repository URL:} \url{https://github.com/ishan7540/Q1}
     \item \textbf{Default Branch:} \texttt{main}
-    \item \textbf{Feature Branches:} \texttt{feature/entropy-analysis}, \texttt{feature/nist-compliance}
+    \item \textbf{Active Branches:} \texttt{feature/entropy-analysis}, \texttt{feature/nist-compliance}, \texttt{feature/json-export}
+    \item \textbf{Key Version Control Operations Demonstrated:} \texttt{git init}, \texttt{git add}, \texttt{git commit}, \texttt{git push}, \texttt{git checkout -b}, \texttt{git merge}, \texttt{git status}, \texttt{git diff}, \texttt{git restore}, \texttt{git restore --staged}, and \texttt{git rebase}.
     \item \textbf{Dependencies:} Python standard library exclusively (zero external packages, highly portable).
 \end{itemize}
 
 % -------------------------------------------------------------
 \section{Step-by-Step Version Control Execution Log}
 % -------------------------------------------------------------
-This section provides an exhaustive, sequential record of every Git command executed during the lifecycle of this project, starting from initial workspace creation to remote push and conflict resolution.
+This section provides an exhaustive, sequential record of every Git command executed during the lifecycle of this project.
 
 \subsection{Phase 1: Local Initialization and Initial Remote Commit}
 The repository was initialized locally on the \texttt{main} branch, populated with project files, committed, and connected to the GitHub remote repository.
@@ -136,7 +138,7 @@ git push -u origin main
 \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Screenshot Placeholder 1: Initial Commit and GitHub Remote Push}]
 \textbf{Instructions for Screenshot:} \\
 Open the terminal or GitHub repository page (\url{https://github.com/ishan7540/Q1}). Capture the terminal output showing the output of \texttt{git push -u origin main} and the repository homepage on GitHub showing the initial commit hash (\texttt{27994d0}).
-\vspace{4.0cm}
+\vspace{3.5cm}
 \begin{center}
 \textit{[Insert Screenshot Here: Initial Commit and Remote Push to GitHub]}
 \end{center}
@@ -166,7 +168,7 @@ git push -u origin feature/entropy-analysis
 \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Screenshot Placeholder 2: Feature Branch 1 Commit and Push}]
 \textbf{Instructions for Screenshot:} \\
 Capture the terminal output of \texttt{git commit} and \texttt{git push -u origin feature/entropy-analysis}, or the GitHub branch dropdown showing \texttt{feature/entropy-analysis}.
-\vspace{4.0cm}
+\vspace{3.5cm}
 \begin{center}
 \textit{[Insert Screenshot Here: feature/entropy-analysis Branch & Push]}
 \end{center}
@@ -201,14 +203,14 @@ git push -u origin feature/nist-compliance
 \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Screenshot Placeholder 3: Feature Branch 2 Commit and Push}]
 \textbf{Instructions for Screenshot:} \\
 Capture the terminal output of \texttt{git push -u origin feature/nist-compliance} and the GitHub repository page showing both active feature branches.
-\vspace{4.0cm}
+\vspace{3.5cm}
 \begin{center}
 \textit{[Insert Screenshot Here: feature/nist-compliance Branch & Push]}
 \end{center}
 \end{tcolorbox}
 
 \subsection{Phase 4: Merging First Branch into Main}
-Branch 1 (\texttt{feature/entropy-analysis}) was merged into \texttt{main} first using a explicit merge commit (\texttt{--no-ff}) to maintain clear branching topology.
+Branch 1 (\texttt{feature/entropy-analysis}) was merged into \texttt{main} first using an explicit merge commit (\texttt{--no-ff}) to maintain clear branching topology.
 
 \begin{lstlisting}[style=terminal, caption={Merging feature/entropy-analysis into main}]
 git checkout main
@@ -219,14 +221,14 @@ git push origin main
 \begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=\textbf{Screenshot Placeholder 4: Successful Merge of Branch 1 into Main}]
 \textbf{Instructions for Screenshot:} \\
 Capture the terminal output displaying \texttt{Merge made by the 'ort' strategy} and the push of \texttt{main} to GitHub remote.
-\vspace{4.0cm}
+\vspace{3.5cm}
 \begin{center}
 \textit{[Insert Screenshot Here: Clean Merge of First Branch]}
 \end{center}
 \end{tcolorbox}
 
 \subsection{Phase 5: Triggering the Intentional Merge Conflict}
-With \texttt{main} now incorporating \texttt{feature/entropy-analysis}, an attempt was made to merge \texttt{feature/nist-compliance} into \texttt{main}. Because both branches diverged from the common ancestor commit (\texttt{27994d0}) and modified the identical line blocks in \texttt{passguard/analyzer.py}, \texttt{README.md}, and \texttt{tests/test_analyzer.py}, Git's automatic three-way merge failed, generating an intentional content merge conflict.
+With \texttt{main} now incorporating \texttt{feature/entropy-analysis}, an attempt was made to merge \texttt{feature/nist-compliance} into \texttt{main}. Because both branches diverged from the common ancestor commit (\texttt{27994d0}) and modified identical lines in \texttt{passguard/analyzer.py}, \texttt{README.md}, and \texttt{tests/test_analyzer.py}, Git's automatic three-way merge failed, generating an intentional content merge conflict.
 
 \begin{lstlisting}[style=terminal, caption={Attempting merge and encountering merge conflict}]
 git merge feature/nist-compliance
@@ -245,10 +247,10 @@ Automatic merge failed; fix conflicts and then commit the result.
 
 \begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=\textbf{Screenshot Placeholder 5: Merge Conflict Error Output in Terminal}]
 \textbf{Instructions for Screenshot:} \\
-Capture the exact terminal screen when running \texttt{git merge feature/nist-compliance}, clearly displaying the red/highlighted lines stating: \\
+Capture the exact terminal screen when running \texttt{git merge feature/nist-compliance}, clearly displaying the lines stating: \\
 \texttt{CONFLICT (content): Merge conflict in passguard/analyzer.py} and \\
 \texttt{Automatic merge failed; fix conflicts and then commit the result.}
-\vspace{4.0cm}
+\vspace{3.5cm}
 \begin{center}
 \textit{[Insert Screenshot Here: Merge Conflict Output]}
 \end{center}
@@ -304,7 +306,7 @@ Git annotated the colliding sections with three-way conflict markers:
 \begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=\textbf{Screenshot Placeholder 6: Conflict Markers in Code Editor / Terminal Diff}]
 \textbf{Instructions for Screenshot:} \\
 Capture your code editor (e.g. VS Code, Vim, or Nano) or terminal running \texttt{git diff passguard/analyzer.py} showing the \texttt{<<<<<<< HEAD}, \texttt{=======}, and \texttt{>>>>>>> feature/nist-compliance} conflict boundary markers.
-\vspace{4.0cm}
+\vspace{3.5cm}
 \begin{center}
 \textit{[Insert Screenshot Here: Conflict Markers in Code / git diff]}
 \end{center}
@@ -340,18 +342,112 @@ git push origin main
 \begin{tcolorbox}[colback=green!5!white,colframe=green!60!black,title=\textbf{Screenshot Placeholder 7: Passing Test Suite and Staged Merge Commit}]
 \textbf{Instructions for Screenshot:} \\
 Capture the terminal running \texttt{python3 -m unittest discover tests} showing all tests passing (\texttt{OK}), followed by \texttt{git status} showing \texttt{All conflicts fixed but you are still merging}, and the successful \texttt{git commit}.
-\vspace{4.0cm}
+\vspace{3.5cm}
 \begin{center}
 \textit{[Insert Screenshot Here: Test Suite Success and Merge Commit]}
 \end{center}
 \end{tcolorbox}
 
-\subsection{Phase 8: Verification of Network Topology}
-The final commit graph was inspected using \texttt{git log --graph --oneline --all} to verify the branching, diverging, and converging merge topology.
+\subsection{Phase 8: Practical Application of \texttt{git restore}}
+The assignment requirements explicitly cite \texttt{git restore} as an essential command in the developer toolkit. In modern Git (v2.23+), \texttt{git restore} was introduced to replace the overloaded behaviors of legacy \texttt{git checkout} and \texttt{git reset}.
+
+During the development of the \texttt{feature/json-export} branch, an accidental modification and erroneous staging were performed on \texttt{main.py} to demonstrate the dual capabilities of \texttt{git restore}:
+\begin{enumerate}
+    \item \textbf{Unstaging Staged Files (\texttt{git restore --staged}):} Removing a file from the index/staging area without altering its working tree state.
+    \item \textbf{Discarding Working Tree Changes (\texttt{git restore}):} Discarding uncommitted local modifications in the working tree, reverting the file back to the pristine state of \texttt{HEAD}.
+\end{enumerate}
+
+\begin{lstlisting}[style=terminal, caption={Demonstrating git restore on the index and working tree}]
+# 1. An unintended debug line was appended to main.py
+echo '# Temporary debug print' >> main.py
+
+# 2. Accidental staging into index
+git add main.py
+git status
+# Output shows:
+# Changes to be committed:
+#   (use "git restore --staged <file>..." to unstage)
+#         modified:   main.py
+
+# 3. Unstage file from index using git restore --staged
+git restore --staged main.py
+git status
+# Output shows:
+# Changes not staged for commit:
+#   (use "git restore <file>..." to discard changes in working directory)
+#         modified:   main.py
+
+# 4. Discard working tree changes using git restore
+git restore main.py
+git status
+# Output shows: main.py is completely pristine and clean!
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=purple!5!white,colframe=purple!75!black,title=\textbf{Screenshot Placeholder 9: Demonstration of git restore and git restore --staged}]
+\textbf{Instructions for Screenshot:} \\
+Capture the terminal execution sequence of \texttt{git add main.py}, followed by \texttt{git restore --staged main.py} (showing the file unstaged) and \texttt{git restore main.py} (showing the working directory clean).
+\vspace{3.5cm}
+\begin{center}
+\textit{[Insert Screenshot Here: git restore and git restore --staged Terminal Session]}
+\end{center}
+\end{tcolorbox}
+
+\subsection{Phase 9: Practical Application of \texttt{git rebase}}
+To demonstrate \textbf{\texttt{git rebase}} in accordance with the assignment requirements, a third branch named \texttt{feature/json-export} was created from an earlier commit point (\texttt{af94fb2}). This branch implemented a standalone JSON audit serializer module (\texttt{passguard/exporter.py}) and integrated \texttt{--json} support into \texttt{passguard/cli.py}.
+
+Because \texttt{main} had already progressed forward with the previous merge commit (\texttt{faa0897}) and documentation commits (\texttt{f7250ee}), merging \texttt{feature/json-export} directly would create non-linear commit history. Instead, \textbf{\texttt{git rebase main}} was executed on the feature branch.
+
+\subsubsection{The Mechanics of Git Rebase}
+\texttt{git rebase} operates by:
+\begin{enumerate}
+    \item Finding the common ancestor between \texttt{feature/json-export} and \texttt{main}.
+    \item Temporarily stashing the commits unique to \texttt{feature/json-export} into a patch series.
+    \item Fast-forwarding the feature branch pointer to the exact tip of \texttt{main}.
+    \item Sequentially re-applying (cherry-picking) each patch onto the new base commit.
+\end{enumerate}
+
+\begin{lstlisting}[style=terminal, caption={Executing git rebase and integrating feature}]
+# 1. Checkout feature branch
+git checkout feature/json-export
+
+# 2. Rebase feature commits on top of updated main
+git rebase main
+# Terminal Output:
+# Rebasing (1/1)
+# Successfully rebased and updated refs/heads/feature/json-export.
+
+# 3. Verify tests on the newly rebased tree
+python3 -m unittest discover tests
+
+# 4. Push rebased feature branch to remote
+git push -u origin feature/json-export
+
+# 5. Merge rebased branch into main and push
+git checkout main
+git merge --no-ff feature/json-export -m "Merge branch 'feature/json-export' into main: incorporate JSON export after rebase"
+git push origin main
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=purple!5!white,colframe=purple!75!black,title=\textbf{Screenshot Placeholder 10: Successful Execution of git rebase main}]
+\textbf{Instructions for Screenshot:} \\
+Capture the terminal output of running \texttt{git rebase main} showing \texttt{Rebasing (1/1)} and \texttt{Successfully rebased and updated refs/heads/feature/json-export}, followed by \texttt{git push -u origin feature/json-export}.
+\vspace{3.5cm}
+\begin{center}
+\textit{[Insert Screenshot Here: git rebase Execution and Output]}
+\end{center}
+\end{tcolorbox}
+
+\subsection{Phase 10: Complete Verification of Network Topology}
+The final commit graph was inspected using \texttt{git log --graph --oneline --all} to verify the branching, diverging, conflict resolution, rebase, and final converging topology across all branches.
 
 \begin{lstlisting}[style=terminal, caption={Complete commit graph across all branches}]
 $ git log --graph --oneline --all
-*   faa0897 (HEAD -> main, origin/main) Merge branch 'feature/nist-compliance' into main: resolve conflict by integrating Shannon entropy calculation and NIST SP 800-63B compliance checks
+*   8f31347 (HEAD -> main, origin/main) Merge branch 'feature/json-export' into main: incorporate JSON export after rebase
+|\  
+| * 30030a4 (origin/feature/json-export, feature/json-export) feat(exporter): add JSON export functionality and CLI support
+|/  
+* f7250ee docs: add comprehensive LaTeX report report.tex for Question 1
+*   faa0897 Merge branch 'feature/nist-compliance' into main: resolve conflict by integrating Shannon entropy calculation and NIST SP 800-63B compliance checks
 |\  
 | * af94fb2 (origin/feature/nist-compliance, feature/nist-compliance) feat(analyzer): add NIST SP 800-63B compliance rules and dictionary blacklist
 * |   a71811f Merge branch 'feature/entropy-analysis' into main
@@ -367,8 +463,8 @@ $ git log --graph --oneline --all
 \textbf{Instructions for Screenshot:} \\
 Capture two items:
 1. Terminal output of \texttt{git log --graph --oneline --all}.
-2. GitHub Repository web page: Navigate to \textbf{Insights} $\rightarrow$ \textbf{Network graph} on \url{https://github.com/ishan7540/Q1} showing the dual branch divergence and convergence into \texttt{main}.
-\vspace{4.5cm}
+2. GitHub Repository web page: Navigate to \textbf{Insights} $\rightarrow$ \textbf{Network graph} on \url{https://github.com/ishan7540/Q1} showing all feature branches, the intentional merge conflict resolution, and the rebased branch merging into \texttt{main}.
+\vspace{4.0cm}
 \begin{center}
 \textit{[Insert Screenshot Here: Git Terminal Graph & GitHub Network Visualization]}
 \end{center}
@@ -381,9 +477,9 @@ Capture two items:
 \subsection{Git's Internal Graph Model (DAG) and 3-Way Merge Mechanism}
 To understand why the merge conflict occurred, one must analyze Git's internal storage and merge architecture. Unlike legacy version control systems that track file deltas, Git models history as a \textbf{Directed Acyclic Graph (DAG)} of immutable commit snapshots.
 
-When executing \texttt{git merge <branch>}, Git invokes a merge strategy (historically \texttt{recursive}, and modernly \texttt{ort} — \textit{"Ostensibly Recursive's Twin"}). The algorithm proceeds as follows:
+When executing \texttt{git merge <branch>}, Git invokes a merge strategy (the modern default being \texttt{ort} — \textit{"Ostensibly Recursive's Twin"}). The algorithm proceeds as follows:
 \begin{enumerate}
-    \item \textbf{Common Ancestor Identification (\texttt{merge-base}):} Git traverses the DAG backwards from the two branch tips to identify their closest common ancestor. In our project:
+    \item \textbf{Common Ancestor Identification (\texttt{merge-base}):} Git traverses the DAG backwards from the two branch tips to identify their closest common ancestor:
     \begin{equation}
         \text{merge-base}(\texttt{main}, \texttt{feature/nist-compliance}) = \texttt{27994d0} \quad (\text{Initial Commit})
     \end{equation}
@@ -404,12 +500,34 @@ Git inserts three structural markers to delineate colliding revisions:
     \item \texttt{>>>>>>> <branch\_name>}: Marks the end of the incoming revision from the branch being merged (\texttt{feature/nist-compliance}).
 \end{itemize}
 
-Manual conflict resolution requires removing these markers, harmonizing logic, and registering the resolved file in the index via \texttt{git add}.
+% -------------------------------------------------------------
+\section{Summary of Key Git Commands Demonstrated}
+% -------------------------------------------------------------
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}llp{8.5cm}@{}}
+\toprule
+\textbf{Command} & \textbf{Scope} & \textbf{Role in Laboratory Exercise} \\ \midrule
+\texttt{git init -b main} & Local & Initialized pristine Git repository on default branch \texttt{main}. \\
+\texttt{git add <file>} & Index & Staged working directory changes into Git's staging area (Index). \\
+\texttt{git commit -m "..."} & DAG & Recorded immutable snapshot object referenced by cryptographic SHA hash. \\
+\texttt{git push -u origin <b\dots>} & Remote & Uploaded local commits to GitHub remote and established tracking upstream. \\
+\texttt{git checkout -b <b\dots>} & Branch & Created and checked out new branches in $O(1)$ constant time. \\
+\texttt{git merge <branch>} & Integration & Merged feature branches using three-way merge strategy (\texttt{ort}). \\
+\texttt{git status} & Working Tree & Inspected tracked, unstaged, staged, and unmerged conflicting paths. \\
+\texttt{git diff} & Comparison & Inspected hunks and explicit three-way conflict markers. \\
+\texttt{git restore <file>} & Working Tree & Discarded uncommitted modifications in the working tree. \\
+\texttt{git restore --staged} & Index & Unstaged prematurely added files from the index back to working tree. \\
+\texttt{git rebase <base>} & History & Re-applied feature commits on top of updated upstream base for linear history. \\ \bottomrule
+\end{tabular}
+\caption{Comprehensive breakdown of Git version control commands executed during the lab.}
+\end{table}
 
 % -------------------------------------------------------------
 \section{Final Merged Code Listings}
 % -------------------------------------------------------------
-Below is the complete, final merged source code of PassGuard reflecting the combined architecture.
+Below are key source code listings of PassGuard reflecting the fully merged architecture.
 
 \subsection{\texttt{passguard/analyzer.py} (Resolved Multi-Engine Analyzer)}
 \begin{lstlisting}[language=Python]
@@ -507,137 +625,16 @@ def evaluate_strength(password: str) -> dict:
     }
 \end{lstlisting}
 
-\subsection{\texttt{passguard/generator.py} (Cryptographic CSPRNG Generator)}
+\subsection{\texttt{passguard/exporter.py} (Structured JSON Exporter)}
 \begin{lstlisting}[language=Python]
-"""Password generator module using CSPRNG."""
+"""PassGuard JSON Exporter module."""
 
-import secrets
-import string
-
-AMBIGUOUS_CHARS = "Il1O0o5S2Z"
+import json
 
 
-def generate_password(
-    length: int = 16,
-    use_upper: bool = True,
-    use_lower: bool = True,
-    use_digits: bool = True,
-    use_symbols: bool = True,
-    avoid_ambiguous: bool = False,
-) -> str:
-    """Generate a cryptographically secure random password."""
-    if length < 4:
-        raise ValueError("Password length must be at least 4 characters.")
-
-    pools = []
-    guaranteed = []
-
-    if use_lower:
-        chars = string.ascii_lowercase
-        if avoid_ambiguous:
-            chars = "".join(c for c in chars if c not in AMBIGUOUS_CHARS)
-        pools.append(chars)
-        guaranteed.append(secrets.choice(chars))
-
-    if use_upper:
-        chars = string.ascii_uppercase
-        if avoid_ambiguous:
-            chars = "".join(c for c in chars if c not in AMBIGUOUS_CHARS)
-        pools.append(chars)
-        guaranteed.append(secrets.choice(chars))
-
-    if use_digits:
-        chars = string.digits
-        if avoid_ambiguous:
-            chars = "".join(c for c in chars if c not in AMBIGUOUS_CHARS)
-        pools.append(chars)
-        guaranteed.append(secrets.choice(chars))
-
-    if use_symbols:
-        chars = "!@#$%^&*()-_=+[]{}|;:,.<>?"
-        if avoid_ambiguous:
-            chars = "".join(c for c in chars if c not in AMBIGUOUS_CHARS)
-        pools.append(chars)
-        guaranteed.append(secrets.choice(chars))
-
-    if not pools:
-        raise ValueError("At least one character set must be selected.")
-
-    all_chars = "".join(pools)
-    remaining_length = length - len(guaranteed)
-    random_chars = [secrets.choice(all_chars) for _ in range(remaining_length)]
-
-    combined = guaranteed + random_chars
-    # Cryptographic shuffle
-    for i in range(len(combined) - 1, 0, -1):
-        j = secrets.randbelow(i + 1)
-        combined[i], combined[j] = combined[j], combined[i]
-
-    return "".join(combined)
-\end{lstlisting}
-
-\subsection{\texttt{passguard/cli.py} (Command-Line Interface)}
-\begin{lstlisting}[language=Python]
-"""Command-line interface for PassGuard."""
-
-import argparse
-import sys
-from passguard.generator import generate_password
-from passguard.analyzer import evaluate_strength
-
-
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        prog="passguard",
-        description="PassGuard: Secure Password Generator & Security Analyzer",
-    )
-    subparsers = parser.add_subparsers(dest="command", help="Available subcommands")
-
-    gen_parser = subparsers.add_parser("generate", help="Generate a secure password")
-    gen_parser.add_argument("-l", "--length", type=int, default=16, help="Password length")
-    gen_parser.add_argument("--no-upper", action="store_true", help="Exclude uppercase")
-    gen_parser.add_argument("--no-lower", action="store_true", help="Exclude lowercase")
-    gen_parser.add_argument("--no-digits", action="store_true", help="Exclude digits")
-    gen_parser.add_argument("-s", "--symbols", action="store_true", help="Include symbols")
-    gen_parser.add_argument("--avoid-ambiguous", action="store_true", help="Avoid ambiguous")
-
-    eval_parser = subparsers.add_parser("analyze", help="Analyze password strength")
-    eval_parser.add_argument("password", type=str, help="Password string to analyze")
-
-    return parser
-
-
-def main(args=None):
-    parser = build_parser()
-    parsed_args = parser.parse_args(args)
-
-    if parsed_args.command == "generate":
-        pwd = generate_password(
-            length=parsed_args.length,
-            use_upper=not parsed_args.no_upper,
-            use_lower=not parsed_args.no_lower,
-            use_digits=not parsed_args.no_digits,
-            use_symbols=parsed_args.symbols,
-            avoid_ambiguous=parsed_args.avoid_ambiguous,
-        )
-        print(f"Generated Password: {pwd}")
-        analysis = evaluate_strength(pwd)
-        print(f"Rating: {analysis['rating']} (Score: {analysis['score']})")
-    elif parsed_args.command == "analyze":
-        analysis = evaluate_strength(parsed_args.password)
-        print(f"Strength Analysis for: {parsed_args.password}")
-        print(f"Rating: {analysis['rating']}")
-        print(f"Score:  {analysis['score']}")
-        print("Details:")
-        for item in analysis["details"]:
-            print(f"  - {item}")
-    else:
-        parser.print_help()
-        sys.exit(1)
-
-
-if __name__ == "__main__":
-    main()
+def export_analysis_json(analysis_data: dict, indent: int = 2) -> str:
+    """Formats password strength analysis as a formatted JSON string."""
+    return json.dumps(analysis_data, indent=indent)
 \end{lstlisting}
 
 \newpage
@@ -675,6 +672,25 @@ In this exercise:
 
 Had Git arbitrarily favored one change over the other (for instance, a simplistic ``last write wins'' heuristic), the resulting codebase would have dropped critical security capabilities. The merge conflict forced a conscious, deliberate review where both features were unified into a comprehensive, dual-criteria evaluation engine. Thus, merge conflicts serve as \textbf{collaboration checkpoints} that preserve code quality and multi-stakeholder intent.
 
+\subsection{The Architectural Role of \texttt{git restore}}
+Historically, Git overloaded \texttt{git checkout} with two fundamentally disparate responsibilities: manipulating branch pointers (switching branches) and manipulating working tree files (discarding edits). Similarly, \texttt{git reset} was overloaded with managing the index, commit history, and working tree simultaneously.
+
+The introduction of \textbf{\texttt{git restore}} in Git 2.23 disambiguates these operations into an expressive, safe primitive:
+\begin{itemize}
+    \item \texttt{git restore <file>} strictly targets the working tree, providing an explicit, non-destructive mental model for discarding uncommitted experimental code without risking detached \texttt{HEAD} states.
+    \item \texttt{git restore --staged <file>} strictly targets the index, cleanly separating staging lifecycle management from working tree modifications.
+    \item During active conflicts, \texttt{git restore --ours} and \texttt{git restore --theirs} provide granular mechanisms to selectively restore either side of a conflicting file before re-introducing custom edits.
+\end{itemize}
+
+\subsection{Merge vs. Rebase: The Architectural Trade-Off}
+A pivotal conceptual insight reinforced by this laboratory is the dichotomy between \textbf{\texttt{git merge}} and \textbf{\texttt{git rebase}}:
+\begin{itemize}
+    \item \textbf{\texttt{git merge}} is \textbf{chronologically truthful}. It creates a merge commit with multiple parent pointers, preserving the exact parallel historical reality of when branches diverged and re-converged. However, in large repositories with dozens of concurrent feature branches, excessive merge commits create an intricate ``railroad'' graph topology that complicates linear bisecting (\texttt{git bisect}) and visual comprehension.
+    \item \textbf{\texttt{git rebase}} is \textbf{storytelling-optimized}. It rewrites project history by replaying local commits on top of the newest upstream baseline, linearizing history as though the developer had begun their work seconds ago. While this creates clean, easily traversed histories, rebasing rewrites commit SHAs. Consequently, the fundamental \textbf{Golden Rule of Rebasing} applies: \textit{never rebase commits that have been pushed to a shared public branch}.
+\end{itemize}
+
+In this lab, both paradigms were applied in their appropriate contexts: \texttt{git merge} was utilized for integrating the major divergent feature branches containing the intentional merge conflict, while \texttt{git rebase} was utilized on the localized \texttt{feature/json-export} branch to align it linearly with upstream \texttt{main}.
+
 \subsection{Industry Best Practices for Conflict Prevention and Resolution}
 In production DevOps environments and modern Continuous Integration/Continuous Deployment (CI/CD) pipelines, merge conflicts cannot be entirely prevented, but their frequency and severity can be drastically mitigated through disciplined engineering practices:
 
@@ -690,7 +706,8 @@ Completing this assignment provided invaluable practical insight into version co
 \begin{itemize}
     \item An intuitive understanding of Git's DAG structure and how \texttt{merge-base} computation functions.
     \item Confidence in reading and manipulating three-way conflict markers (\texttt{<<<<<<<}, \texttt{=======}, \texttt{>>>>>>>}) directly in code without anxiety.
-    \item The profound importance of pairing version control operations with automated test suites: running \texttt{python3 -m unittest discover tests} immediately after manual conflict resolution verified that the integrated logic was syntactically and semantically sound before committing.
+    \item Mastery over precision state restoration via \texttt{git restore} and history linearization via \texttt{git rebase}.
+    \item The profound importance of pairing version control operations with automated test suites: running \texttt{python3 -m unittest discover tests} immediately after conflict resolution and rebase verified that the integrated logic was syntactically and semantically sound before committing.
 \end{itemize}
 Distributed version control is the cornerstone of modern collaborative software engineering, DevOps automation, and reproducible infrastructure.
 
