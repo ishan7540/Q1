@@ -4,6 +4,7 @@ import argparse
 import sys
 from passguard.generator import generate_password
 from passguard.analyzer import evaluate_strength
+from passguard.exporter import export_analysis_json
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -41,6 +42,9 @@ def build_parser() -> argparse.ArgumentParser:
         "analyze", help="Analyze password strength"
     )
     eval_parser.add_argument("password", type=str, help="Password string to analyze")
+    eval_parser.add_argument(
+        "--json", action="store_true", help="Output analysis in JSON format"
+    )
 
     return parser
 
@@ -63,12 +67,15 @@ def main(args=None):
         print(f"Rating: {analysis['rating']} (Score: {analysis['score']})")
     elif parsed_args.command == "analyze":
         analysis = evaluate_strength(parsed_args.password)
-        print(f"Strength Analysis for: {parsed_args.password}")
-        print(f"Rating: {analysis['rating']}")
-        print(f"Score:  {analysis['score']}")
-        print("Details:")
-        for item in analysis["details"]:
-            print(f"  - {item}")
+        if parsed_args.json:
+            print(export_analysis_json(analysis))
+        else:
+            print(f"Strength Analysis for: {parsed_args.password}")
+            print(f"Rating: {analysis['rating']}")
+            print(f"Score:  {analysis['score']}")
+            print("Details:")
+            for item in analysis["details"]:
+                print(f"  - {item}")
     else:
         parser.print_help()
         sys.exit(1)
